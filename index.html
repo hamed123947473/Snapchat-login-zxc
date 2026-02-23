@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تسجيل الدخول</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: flex-start;
+  padding-top: 30px;
+}
+
+.card {
+  width: 88%;
+  max-width: 340px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  padding: 25px 15px;
+  text-align: center;
+}
+
+.logo {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* جعل الخانات في منتصف الإطار */
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 5px;
+  width: 90%; /* محاذاة الوصف مع بداية الخانة */
+  text-align: right; /* يبقى الوصف على يمين الخانة */
+}
+
+input {
+  width: 90%; /* الخانة في منتصف الإطار */
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #000;
+}
+
+input::placeholder {
+  color: #a0a0a0;
+  font-weight: 400;
+}
+
+button {
+  width: 90%;
+  padding: 12px;
+  border-radius: 25px;
+  border: none;
+  background: #007AFF;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.link {
+  display: block;
+  font-size: 14px;
+  margin-top: 10px;
+  color: #007AFF;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none;
+}
+
+.fade {
+  animation: fade .3s ease;
+}
+
+@keyframes fade {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.signup-text {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #444;
+  text-align: center;
+}
+
+.signup-text a {
+  color: #007AFF;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+/* تحسين التوافق مع الهواتف الصغيرة */
+@media (max-width: 400px) {
+  .card {
+    padding: 20px 12px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  input, button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  label {
+    font-size: 13px;
+    width: 90%;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- شعار سناب -->
+  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" class="logo" alt="Snapchat Logo">
+
+  <!-- الخطوة 1: البريد أو اسم المستخدم -->
+  <div id="step1" class="fade">
+    <h1>تسجيل الدخول</h1>
+    <div class="input-group">
+      <label for="userInput">البريد الإلكتروني أو اسم المستخدم</label>
+      <input type="text" id="userInput" placeholder="أدخل البريد الإلكتروني أو اسم المستخدم" value="">
+    </div>
+    <button onclick="nextStep()">التالي</button>
+    <a class="link" onclick="usePhone()">استخدام رقم الهاتف بدلاً من ذلك</a>
+  </div>
+
+  <!-- الخطوة 1b: إدخال رقم الهاتف -->
+  <div id="stepPhone" class="hidden fade">
+    <h1>تسجيل الدخول برقم الهاتف</h1>
+    <div class="input-group">
+      <label for="phoneInput">رقم الهاتف</label>
+      <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف" value="">
+    </div>
+    <button onclick="nextStepPhone()">التالي</button>
+    <a class="link" onclick="backToEmail()">الرجوع للبريد الإلكتروني</a>
+  </div>
+
+  <!-- الخطوة 2: كلمة المرور -->
+  <div id="step2" class="hidden fade">
+    <h1 id="userDisplay"></h1>
+    <div class="input-group">
+      <label for="passwordInput">كلمة المرور</label>
+      <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" value="">
+    </div>
+    <button onclick="login()">تسجيل الدخول</button>
+    <a class="link" onclick="backToStep1()">تغيير الحساب</a>
+  </div>
+
+</div>
+
+<!-- النص أسفل الإطار -->
+<div class="signup-text">
+  هل أنت جديد في سناب شات؟ <a href="#">تسجيل الاشتراك</a>
+</div>
+
+<script>
+function fadeTransition(hideEl, showEl) {
+  hideEl.classList.remove('fade');
+  hideEl.classList.add('hidden');
+  showEl.classList.remove('hidden');
+  showEl.classList.add('fade');
+}
+
+function nextStep() {
+  const user = document.getElementById("userInput").value.trim();
+  if(user === "") { alert("الرجاء إدخال اسم المستخدم أو البريد الإلكتروني"); return; }
+  document.getElementById("userDisplay").innerText = user;
+  fadeTransition(document.getElementById("step1"), document.getElementById("step2"));
+}
+
+function nextStepPhone() {
+  const phone = document.getElementById("phoneInput").value.trim();
+  if(phone === "") { alert("الرجاء إدخال رقم الهاتف"); return; }
+  document.getElementById("userDisplay").innerText = phone;
+  fadeTransition(document.getElementById("stepPhone"), document.getElementById("step2"));
+}
+
+function login() {
+  const password = document.getElementById("passwordInput").value.trim();
+  if(password === "") { alert("الرجاء إدخال كلمة المرور"); return; }
+  alert("تم تسجيل الدخول بنجاح!");
+}
+
+function usePhone() {
+  fadeTransition(document.getElementById("step1"), document.getElementById("stepPhone"));
+}
+
+function backToEmail() {
+  fadeTransition(document.getElementById("stepPhone"), document.getElementById("step1"));
+}
+
+function backToStep1() {
+  fadeTransition(document.getElementById("step2"), document.getElementById("step1"));
+}
+</script>
+
+</body>
+</html>
